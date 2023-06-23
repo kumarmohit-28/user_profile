@@ -1,0 +1,146 @@
+project_name/
+├── manage.py
+├── project_name/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── app_name/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+└── media/  (directory for uploaded media files)
+
+
+
+
+frontend/
+├── public/
+│   ├── index.html
+│   └── ...
+├── src/
+│   ├── components/
+│   │   ├── LoginForm.js
+│   │   ├── RegistrationForm.js
+│   │   ├── ProfileForm.js
+│   │   ├── MediaListing.js
+│   │   ├── Home.js
+│   │   ├── ImageUploadForm.js
+│   │   ├── VideoUploadForm.js
+│   │   └── ProfileView.js
+│   ├── App.js
+│   ├── index.js
+│   └── ...
+├── package.json
+└── ...
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = 'your-secret-key'
+
+DEBUG = True
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# Django Rest Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+# AWS S3 settings
+AWS_ACCESS_KEY_ID = 'your-access-key-id'
+AWS_SECRET_ACCESS_KEY = 'your-secret-access-key'
+AWS_STORAGE_BUCKET_NAME = 'your-bucket-name'
+AWS_S3_REGION_NAME = 'your-s3-region-name'
+AWS_S3_ENDPOINT_URL = 'your-s3-endpoint-url'
+
+# Django media files settings
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/'
+MEDIA_ROOT = ''
+
+# Django static files settings
+STATIC_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+STATIC_ROOT = ''
+
+# Other Django settings
+ROOT_URLCONF = 'your_project.urls'
+WSGI_APPLICATION = 'your_project.wsgi.application'
+AUTH_USER_MODEL = 'your_app.CustomUser'  # Replace with your app's user model
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'your-database-name',
+        'USER': 'your-database-user',
+        'PASSWORD': 'your-database-password',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+# Update the installed apps with your app and other required apps
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'your_app',
+]
+
+# Update the middleware classes as required
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# Update the template directories and other template settings as required
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+# Other project-specific settings can be added here
+
+# Import local settings if available
+try:
+    from .local_settings import *
+except ImportError:
+    pass
